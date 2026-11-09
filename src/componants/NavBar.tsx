@@ -1,6 +1,15 @@
+'use client'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { signOut, useSession } from '@/lib/auth-client';
+import Link from 'next/link';
 import React from 'react';
 
 export default function NavBar() {
+    const { data: session } = useSession();
+
+    const handleSignOut = async () => {
+        await signOut()
+    }
     return (
         <nav className="w-full bg-[#121212] px-6 py-4 flex items-center justify-between border-b border-neutral-800">
             {/* Logo Area */}
@@ -34,18 +43,40 @@ export default function NavBar() {
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-4">
-                    <a
-                        href="/sign-in"
-                        className="text-sm font-medium text-[#6366f1] hover:text-[#4f46e5] transition-colors"
-                    >
-                        Sign In
-                    </a>
-                    <a
-                        href="/sign-up"
-                        className="bg-[#4f46e5] hover:bg-[#4338ca] text-white text-sm font-medium px-4 py-2 rounded-lg shadow-md transition-all transform active:scale-95"
-                    >
-                        Get Started
-                    </a>
+                    {session?.user ? <> <span className='text-blue-300'><Avatar>
+                        <AvatarImage
+                            src={session?.user?.image || "https://github.com/shadcn.png"} 
+                            alt="avator"
+                            className="grayscale"
+                        />
+                        <AvatarFallback>CN</AvatarFallback>
+                    </Avatar></span>
+                    
+                    <button 
+                        onClick={handleSignOut}  
+                        className="text-sm font-medium text-[#6366f1] hover:text-[#4f46e5] transition-colors">
+
+                        Sign Out
+                    </button>
+                    </> :
+                        <>
+                            <button>
+                                <Link
+                                    href="/sign-in"
+                                    className="text-sm font-medium text-[#6366f1] hover:text-[#4f46e5] transition-colors"
+                                >
+                                    Sign In
+                                </Link>
+                            </button>
+                            <button>
+                                <Link
+                                    href="/sign-up"
+                                    className="bg-[#4f46e5] hover:bg-[#4338ca] text-white text-sm font-medium px-4 py-2 rounded-lg shadow-md transition-all transform active:scale-95"
+                                >
+                                    Get Started
+                                </Link>
+                            </button>
+                        </>}
                 </div>
             </div>
         </nav>
