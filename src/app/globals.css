@@ -2,6 +2,31 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/*
+ * Sidebar tokens for the shadcn `Sidebar` primitives (`src/components/ui/sidebar.tsx`).
+ * Without these, utilities like `bg-sidebar` / `hover:bg-sidebar-accent` are
+ * silently dropped because Tailwind can't resolve the theme keys.
+ * The rest of the shadcn palette (background, primary, …) is intentionally left
+ * undefined for now — the app styles those surfaces with explicit colors.
+ */
+:root {
+    --sidebar: #0b0b0f;
+    --sidebar-foreground: #ededf0;
+    --sidebar-accent: #1c1c23;
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #26262d;
+    --sidebar-ring: #6366f1;
+}
+
+@theme inline {
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
 body {
     background-color:  #0B0B0F;
     color:white

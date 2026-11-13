@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import NavBar from "@/componants/NavBar";
 import Footer from "@/componants/Footer";
@@ -26,7 +27,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <NavBar/>
+        {/* NavBar reads `useSession()`/`usePathname()` (browser-only values), so
+            it must sit behind a Suspense boundary — otherwise prerendering a
+            dynamic route fails with "client rendering requested outside a
+            Suspense boundary" (nextjs.org/docs/messages/blocking-prerender-client-hook). */}
+        <Suspense fallback={null}>
+          <NavBar/>
+        </Suspense>
         <main>{children}</main>
         <Footer/>
 

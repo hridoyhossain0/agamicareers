@@ -20,10 +20,9 @@ export default function PaymentSuccessDialog({
     return (
         <Dialog>
             {/* Trigger Button - Place this wherever you launch the confirmation from */}
-            <DialogTrigger asChild>
-                <button >
-                    Pay
-                </button>
+            {/* base-ui uses `render` instead of Radix's `asChild`. */}
+            <DialogTrigger render={<button />}>
+                Pay
             </DialogTrigger>
 
             {/* Modal Dialog Body Content Frame */}

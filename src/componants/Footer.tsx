@@ -2,12 +2,12 @@ import React from 'react';
 
 export default function Footer() {
     return (
-        <footer className="w-full bg-black text-[#555555] font-sans px-8 py-12 flex flex-col justify-between min-h-[350px]">
+        <footer className="w-full bg-black text-[#555555] font-sans px-4 sm:px-6 md:px-8 py-10 sm:py-12 flex flex-col justify-between md:min-h-[350px]">
             {/* Top Section */}
             <div className="flex flex-col md:flex-row md:justify-between gap-10 md:gap-4 max-w-7xl w-full mx-auto">
 
                 {/* Left Side: Brand & Description */}
-                <div className="flex flex-col gap-4 max-w-xs">
+                <div className="flex flex-col gap-4 w-full max-w-xs">
                     {/* Logo */}
                     <div className="flex items-center gap-1 font-sans text-xl font-bold select-none tracking-tight">
                         <span className="text-[#0070f3]">hire</span>
@@ -24,7 +24,7 @@ export default function Footer() {
                 </div>
 
                 {/* Right Side: Links Columns */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-12 md:gap-20">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-12 md:gap-20 w-full">
                     {/* Product Column */}
                     <div className="flex flex-col gap-3">
                         <h4 className="text-sm font-medium text-[#4f46e5] tracking-wide mb-1">Product</h4>
@@ -52,7 +52,7 @@ export default function Footer() {
             </div>
 
             {/* Bottom Section */}
-            <div className="max-w-7xl w-full mx-auto pt-10 mt-10 border-t border-neutral-900 flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div className="max-w-7xl w-full mx-auto pt-8 mt-8 sm:pt-10 sm:mt-10 border-t border-neutral-900 flex flex-col sm:flex-row justify-between items-center gap-6 text-center sm:text-left">
 
                 {/* Social Icons */}
                 <div className="flex items-center gap-3">
