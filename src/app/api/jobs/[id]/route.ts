@@ -5,11 +5,11 @@ import { deleteJobById, getJobById } from "@/lib/server/jobs-store"
 
 type Params = { params: Promise<{ id: string }> }
 
-/** `GET /api/jobs/:id` — single job (used by the manage-jobs "View" action). */
+/**
+ * `GET /api/jobs/:id` — single job. **Public read** (the browse-jobs detail
+ * view and the manage-jobs "View" action both need it without a session).
+ */
 export async function GET(_request: NextRequest, { params }: Params) {
-    const denied = await requireRecruiter()
-    if (denied) return denied
-
     const { id } = await params
     try {
         const job = await getJobById(id)
@@ -21,15 +21,25 @@ export async function GET(_request: NextRequest, { params }: Params) {
     }
 }
 
-/** `DELETE /api/jobs/:id` — delete a job (used by the manage-jobs "Delete" action). */
+/**
+ * `DELETE /api/jobs/:id` — delete a job (manage-jobs "Delete").
+ * Recruiter/admin only, and **owner-only**: the poster may delete their own
+ * listing, an admin may delete any.
+ */
 export async function DELETE(_request: NextRequest, { params }: Params) {
-    const denied = await requireRecruiter()
-    if (denied) return denied
+    const user = await requireRecruiter()
+    if (user instanceof Response) return user
 
     const { id } = await params
     try {
-        const deleted = await deleteJobById(id)
-        if (!deleted) return Response.json({ error: "Job not found" }, { status: 404 })
+        const outcome = await deleteJobById(id, {
+            id: user.id,
+            isAdmin: user.role === "admin",
+        })
+        if (outcome === "missing") return Response.json({ error: "Job not found" }, { status: 404 })
+        if (outcome === "forbidden") {
+            return Response.json({ error: "You can only delete your own jobs" }, { status: 403 })
+        }
         return Response.json({ deletedCount: 1, _id: id })
     } catch (err) {
         console.error(`DELETE /api/jobs/${id} failed:`, err)

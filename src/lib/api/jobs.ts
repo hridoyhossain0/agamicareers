@@ -16,7 +16,7 @@ export const getJobs = async (query = ''): Promise<JobRow[]> => {
     return Array.isArray(data) ? data : []
 }
 
-export const getJobById = async (jobId: string): Promise<JobRow> => {
+export const getJobById = async  (jobId: string): Promise<JobRow> => {
     const res = await fetch(`${BASE_URL}/jobs/${jobId}`)
     if (!res.ok) throw new Error(`Failed to load job (${res.status})`)
     return res.json()

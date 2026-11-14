@@ -4,20 +4,37 @@ import { requireRecruiter } from "@/lib/server/auth-guard"
 import { createJob, listJobs } from "@/lib/server/jobs-store"
 
 /**
- * `GET /api/jobs` — list jobs, newest first.
- * Optional filters: `q` (title/company), `status`, `category` ("all"/empty skips one).
- * Mirrors Express `GET /jobs` so the manage-jobs page payload is unchanged.
+ * `GET /api/jobs` — list jobs, newest first. **Public read**: job listings are
+ * what the public `/browse-jobs` board shows, so anyone (including logged-out
+ * visitors) may list them — same as the old Express `GET /jobs`.
+ * Optional filters: `q` (title/company), `status`, `category` ("all"/empty
+ * skips one), `jobType` (comma-separated), `location`, `remote=1`, `posted`
+ * ("24h"/"week"/"month"), `salaryMin`/`salaryMax` (annualized), and `mine=1`
+ * — the one non-public mode: it requires a recruiter/admin session and
+ * returns only that account's own postings (the manage-jobs dashboard).
  */
 export async function GET(request: NextRequest) {
-    const denied = await requireRecruiter()
-    if (denied) return denied
-
     const params = request.nextUrl.searchParams
+
+    let createdBy: string | undefined
+    if (params.get("mine") === "1") {
+        const user = await requireRecruiter()
+        if (user instanceof Response) return user
+        createdBy = user.id
+    }
+
     try {
         const jobs = await listJobs({
             q: params.get("q") ?? "",
             status: params.get("status") ?? "",
             category: params.get("category") ?? "",
+            jobType: params.get("jobType") ?? "",
+            location: params.get("location") ?? "",
+            remote: params.get("remote") ?? "",
+            posted: params.get("posted") ?? "",
+            salaryMin: params.get("salaryMin") ?? "",
+            salaryMax: params.get("salaryMax") ?? "",
+            createdBy,
         })
         return Response.json(jobs)
     } catch (err) {
@@ -26,10 +43,10 @@ export async function GET(request: NextRequest) {
     }
 }
 
-/** `POST /api/jobs` — create a job. Returns `{ acknowledged, insertedId }`. */
+/** `POST /api/jobs` — create a job. Recruiter/admin only. Returns `{ acknowledged, insertedId }`. */
 export async function POST(request: Request) {
-    const denied = await requireRecruiter()
-    if (denied) return denied
+    const user = await requireRecruiter()
+    if (user instanceof Response) return user
 
     let body: unknown
     try {
@@ -42,7 +59,9 @@ export async function POST(request: Request) {
     }
 
     try {
-        const job = await createJob(body as Record<string, unknown>)
+        // `createdBy` is spread last so ownership always comes from the
+        // session, never from whatever the client sent in the body.
+        const job = await createJob({ ...(body as Record<string, unknown>), createdBy: user.id })
         return Response.json(job)
     } catch (err) {
         console.error("POST /api/jobs failed:", err)

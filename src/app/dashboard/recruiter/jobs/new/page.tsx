@@ -56,19 +56,26 @@ export default function NewJobPage() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const jobData: JobFormData = { ...form }
-        console.log("new job form data:", jobData)
-        // TODO: wire into the backend (`POST /jobs` or similar).
 
-        const result = await createJob(jobData);
-        if(result.insertedId){
-            console.log("createJob result:", result);
+        try {
+            const result = await createJob(jobData)
+            if (!result?.insertedId) {
+                throw new Error("The jobs API didn't confirm the new listing.")
+            }
             toast.add({
                 title: "Job created",
                 description: "The job has been successfully created.",
             })
-            router.push('/dashboard/recruiter/jobs')
+            // The manage page refetches `mine=1` on mount, so the new listing
+            // is already waiting there under this account.
+            router.push("/dashboard/recruiter/jobs")
+        } catch (err) {
+            console.error("createJob failed:", err)
+            toast.add({
+                title: "Couldn't create job",
+                description: err instanceof Error ? err.message : "Please try again.",
+            })
         }
-
     }
 
     return (

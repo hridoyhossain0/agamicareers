@@ -28,27 +28,36 @@ function StatCard({ icon: Icon, label, value }: StatCardProps) {
     );
 }
 
-export default function JobStatsGrid() {
+/** Every value comes from the fetched job — no placeholders. */
+interface JobStatsGridProps {
+    /** `minSalary – maxSalary salaryFrequency`, or `''` when the posting has none. */
+    salary: string;
+    location: string;
+    type: string;
+    category: string;
+}
+
+export default function JobStatsGrid({ salary, location, type, category }: JobStatsGridProps) {
     const stats = [
         {
             icon: Banknote,
             label: 'Salary Range',
-            value: '$140k – $180k',
+            value: salary || '—',
         },
         {
             icon: MapPin,
             label: 'Location',
-            value: 'Remote (US)',
+            value: location || '—',
         },
         {
             icon: Clock,
             label: 'Job Type',
-            value: 'Full-time',
+            value: type,
         },
         {
             icon: BarChart3,
-            label: 'Experience',
-            value: '5+ Years',
+            label: 'Category',
+            value: category || '—',
         },
     ];
 

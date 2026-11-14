@@ -1,18 +1,16 @@
 'use client'
 import React, { useState } from 'react';
-import { Bookmark, CheckCircle2, Briefcase } from 'lucide-react';
+import { Bookmark, Briefcase } from 'lucide-react';
 
 interface JobHeaderBarProps {
-    title?: string;
-    company?: string;
-    isVerified?: boolean;
+    title: string;
+    company: string;
     onApply?: () => void;
 }
 
 export default function JobHeaderBar({
-    title = "Senior Product Designer",
-    company = "CloudScale AI",
-    isVerified = true,
+    title,
+    company,
     onApply
 }: JobHeaderBarProps) {
     const [isBookmarked, setIsBookmarked] = useState(false);
@@ -34,15 +32,6 @@ export default function JobHeaderBar({
                     </h1>
                     <div className="flex items-center gap-2 text-xs md:text-sm text-gray-400 font-light">
                         <span>{company}</span>
-                        {isVerified && (
-                            <>
-                                <span className="text-gray-600">•</span>
-                                <div className="flex items-center gap-1.5 text-[#22C55E] font-medium text-xs">
-                                    <CheckCircle2 className="w-3.5 h-3.5 fill-[#22C55E]/10" />
-                                    Verified Employer
-                                </div>
-                            </>
-                        )}
                     </div>
                 </div>
             </div>

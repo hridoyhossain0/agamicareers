@@ -123,7 +123,9 @@ export default function ManageJobsPage() {
     // hold their initial values, and retries reset them in the click handler.
     const loadJobs = useCallback(async () => {
         try {
-            setJobs(await getJobs())
+            // `mine=1` scopes the list to the signed-in account's own postings
+            // (401/403 from the API surface through the error state below).
+            setJobs(await getJobs("mine=1"))
             setError(null)
         } catch (err) {
             console.error("getJobs failed:", err)
@@ -281,7 +283,7 @@ export default function ManageJobsPage() {
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">Manage Jobs</h1>
                     <p className="mt-1.5 text-sm text-neutral-400">
-                        View and manage all job listings posted across the platform.
+                        View and manage the job listings you&apos;ve posted.
                     </p>
                 </div>
                 <Button

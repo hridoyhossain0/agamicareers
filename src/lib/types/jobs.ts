@@ -43,4 +43,6 @@ export type JobRow = JobFormData & {
     createdAt?: string | null
     /** Relativized post date, e.g. "Posted 4d ago". */
     posted: string
+    /** Account that posted it (stamped by `POST /jobs` from the session). */
+    createdBy?: string
 }
