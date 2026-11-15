@@ -1,5 +1,5 @@
 import React from 'react';
-import { Banknote, MapPin, Clock, BarChart3 } from 'lucide-react';
+import { Banknote, MapPin, Clock, BarChart3, LayoutGrid } from 'lucide-react';
 
 interface StatCardProps {
     icon: React.ComponentType<{ className?: string }>;
@@ -9,20 +9,17 @@ interface StatCardProps {
 
 function StatCard({ icon: Icon, label, value }: StatCardProps) {
     return (
-        <div className="bg-[#121214] border border-white/[0.04] rounded-2xl p-5 flex flex-col justify-between text-left min-w-[160px] flex-1">
-            {/* Upper Section: Minimal Icon */}
-            <div className="mb-4">
-                <Icon className="w-5 h-5 text-gray-500" />
+        <div className="flex flex-col gap-3 bg-[#121214] p-5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.05] bg-[#18181C] text-gray-400">
+                <Icon className="h-4 w-4" />
             </div>
-
-            {/* Lower Section: Typography Details */}
-            <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+            <div className="min-w-0">
+                <dt className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">
                     {label}
-                </span>
-                <span className="text-sm md:text-base font-semibold text-white tracking-wide">
+                </dt>
+                <dd className="mt-1 break-words text-sm font-semibold leading-snug text-white">
                     {value}
-                </span>
+                </dd>
             </div>
         </div>
     );
@@ -62,15 +59,24 @@ export default function JobStatsGrid({ salary, location, type, category }: JobSt
     ];
 
     return (
-        <div className="w-full max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 bg-[#0B0B0F]">
-            {stats.map((stat, index) => (
-                <StatCard
-                    key={index}
-                    icon={stat.icon}
-                    label={stat.label}
-                    value={stat.value}
-                />
-            ))}
-        </div>
+        <section className="overflow-hidden rounded-3xl border border-white/[0.06] bg-[#121214] shadow-xl">
+            <header className="flex items-center gap-2.5 border-b border-white/[0.04] px-6 py-5">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.05] bg-[#18181C] text-gray-400">
+                    <LayoutGrid aria-hidden className="h-4 w-4" />
+                </span>
+                <h2 className="text-sm font-semibold tracking-wide text-white">Job Overview</h2>
+            </header>
+
+            <dl className="grid grid-cols-2 gap-px bg-white/[0.04]">
+                {stats.map((stat, index) => (
+                    <StatCard
+                        key={index}
+                        icon={stat.icon}
+                        label={stat.label}
+                        value={stat.value}
+                    />
+                ))}
+            </dl>
+        </section>
     );
 }

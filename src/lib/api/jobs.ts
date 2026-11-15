@@ -9,8 +9,11 @@ import type { JobFormData, JobRow } from "@/lib/types/jobs"
 // standalone server (e.g. `http://localhost:5000`) instead.
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api"
 
-export const getJobs = async (query = ''): Promise<JobRow[]> => {
-    const res = await fetch(`${BASE_URL}/jobs?${query}`)
+export const getJobs = async (
+    query = '',
+    { signal }: { signal?: AbortSignal } = {},
+): Promise<JobRow[]> => {
+    const res = await fetch(`${BASE_URL}/jobs?${query}`, { signal })
     if (!res.ok) throw new Error(`Failed to load jobs (${res.status})`)
     const data = await res.json()
     return Array.isArray(data) ? data : []

@@ -1,4 +1,5 @@
 import React from 'react';
+import { BadgeCheck, FileText, ListChecks } from 'lucide-react';
 
 interface JobDescriptionDetailProps {
     /** Free text typed into the create-job form. */
@@ -10,21 +11,37 @@ interface JobDescriptionDetailProps {
 const toBullets = (text: string) =>
     text.split('\n').map((line) => line.trim()).filter(Boolean);
 
-function DetailBlock({ heading, items }: { heading: string; items: string[] }) {
+function DetailBlock({
+    heading,
+    items,
+    icon: Icon,
+}: {
+    heading: string;
+    items: string[];
+    icon: React.ComponentType<{ className?: string }>;
+}) {
     if (items.length === 0) return null;
 
     return (
-        <div>
-            <h2 className="text-xl font-semibold mb-4 tracking-wide">{heading}</h2>
-            <ul className="space-y-4">
+        <section>
+            <div className="mb-4 flex items-center gap-2.5">
+                <Icon aria-hidden className="h-4 w-4 text-gray-500" />
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-300">
+                    {heading}
+                </h3>
+            </div>
+            <ul className="space-y-3">
                 {items.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-sm text-gray-400 leading-relaxed font-light">
-                        <span className="text-gray-600 mt-1.5 shrink-0 text-[10px]">•</span>
+                    <li
+                        key={idx}
+                        className="flex items-start gap-3 text-sm font-light leading-relaxed text-gray-300"
+                    >
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400/60" />
                         <span>{item}</span>
                     </li>
                 ))}
             </ul>
-        </div>
+        </section>
     );
 }
 
@@ -40,9 +57,21 @@ export default function JobDescriptionDetail({ responsibilities, requirements }:
     if (responsibilityItems.length === 0 && requirementItems.length === 0) return null;
 
     return (
-        <div className="w-full max-w-4xl mx-auto bg-[#121214] border border-white/[0.04] rounded-2xl p-8 text-left text-white shadow-xl flex flex-col gap-10">
-            <DetailBlock heading="Responsibilities" items={responsibilityItems} />
-            <DetailBlock heading="Requirements" items={requirementItems} />
-        </div>
+        <article className="rounded-3xl border border-white/[0.06] bg-[#121214] p-6 text-left text-white shadow-xl md:p-8">
+            <header className="mb-8 flex items-center gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-purple-500/20 bg-purple-500/10 text-purple-300">
+                    <FileText aria-hidden className="h-4 w-4" />
+                </span>
+                <div>
+                    <h2 className="text-base font-semibold tracking-wide text-white">Job Description</h2>
+                    <p className="text-xs font-light text-gray-500">Details provided by the employer.</p>
+                </div>
+            </header>
+
+            <div className="space-y-10">
+                <DetailBlock heading="Responsibilities" items={responsibilityItems} icon={ListChecks} />
+                <DetailBlock heading="Requirements" items={requirementItems} icon={BadgeCheck} />
+            </div>
+        </article>
     );
 }
